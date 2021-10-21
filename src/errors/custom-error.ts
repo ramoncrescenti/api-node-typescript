@@ -1,5 +1,5 @@
 class CustomError extends Error {
-  static error: string = 'ERROR';
+  static error = 'ERROR';
   statusCode: number;
   constructor(message: string) {
     super(message);
