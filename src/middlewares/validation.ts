@@ -1,8 +1,13 @@
 import * as Joi from 'joi';
 
-const validationSchema = Joi.object({
+export const userValidationSchema = Joi.object({
   name: Joi.string().alphanum().min(3).max(10).required(),
   email: Joi.string().email(),
 });
 
-export { validationSchema };
+export const emailValidationSchema = Joi.object({
+  email: Joi.string().email().required(),
+  receiver: Joi.string().required(),
+  subject: Joi.string().required(),
+  text: Joi.string().required(),
+});

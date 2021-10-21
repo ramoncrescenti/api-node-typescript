@@ -5,7 +5,7 @@ import {
   ValidatedRequest,
   createValidator,
 } from 'express-joi-validation';
-import { createUser } from '../services/user';
+import { createUser as createUserService, UserParams } from '../services/user';
 
 interface SignUpRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
@@ -18,13 +18,12 @@ async function signUp(
   req: ValidatedRequest<SignUpRequestSchema>,
   res: Response
 ) {
-  const user: object = {
+  const user: UserParams = {
     name: req.body.name,
     email: req.body.email,
-    situacao: 'CADASTRADO',
   };
-  // const retorno = await createUser(user);
-  res.status(201).json(user);
+  const retorno = createUserService(user);
+  res.status(201).json(retorno);
 }
 
 const validator = createValidator({ passError: true });
