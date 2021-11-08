@@ -3,16 +3,17 @@ import { InternalServerError } from '../errors/internal-server-error';
 
 const error = new InternalServerError();
 
-function uncaughtErrorHandler(
-  err: Error,
+export function uncaughtErrorHandler(
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  console.error(err);
-  return res
+    console.log(err);
+    return res
     .status(error.statusCode)
-    .json({ error: error.error, message: error.message.toString() });
+    .json({
+      error: error.error,
+      message: error.message.toString()
+    });
 }
-
-export { uncaughtErrorHandler };

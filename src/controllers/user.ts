@@ -11,21 +11,29 @@ interface SignUpRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     name: string;
     email: string;
+    password: string;
+    phone: {
+      ddd: number;
+      number: number;
+    }
   };
 }
 
-async function signUp(
-  req: ValidatedRequest<SignUpRequestSchema>,
+export async function signUp(
+  { body }: ValidatedRequest<SignUpRequestSchema>,
   res: Response
 ) {
   const user: UserParams = {
-    name: req.body.name,
-    email: req.body.email,
+    name: body.name,
+    email: body.email,
+    password: body.password,
+    phone: {
+      ddd: body.phone.ddd,
+      number: body.phone.number
+    }
   };
   const retorno = createUserService(user);
   res.status(201).json(retorno);
 }
 
-const validator = createValidator({ passError: true });
-
-export { signUp, validator };
+export const validator = createValidator({ passError: true });

@@ -14,7 +14,7 @@ export interface MailParams {
 const mailService = mailjet.connect(mjPublicKey, mjPrivateKey);
 
 export async function sendMail(mailBody: MailParams) {
-  const request = mailService.post('send', { version: 'v3.1' }).request({
+  return mailService.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
         From: {
@@ -23,7 +23,8 @@ export async function sendMail(mailBody: MailParams) {
         },
         To: [
           {
-            Email: mailBody.email,
+            // FIXME: TESTANDO ERRO
+            Email: mailBody.receiver,
             Name: mailBody.receiver,
           },
         ],
@@ -32,11 +33,4 @@ export async function sendMail(mailBody: MailParams) {
       },
     ],
   });
-  request
-    .then((result) => {
-      console.log(result.body);
-    })
-    .catch((err) => {
-      console.log(err.statusCode);
-    });
 }

@@ -4,22 +4,29 @@ import {
   ValidatedRequest,
   ValidatedRequestSchema,
 } from 'express-joi-validation';
+import { MailError } from '../errors/mail-error';
 import { sendMail as sendMailService, MailParams } from '../services/mail';
+import { Email } from 'node-mailjet';
 
 interface SendMailRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: MailParams;
 }
 
 export async function sendMail(
-  req: ValidatedRequest<SendMailRequestSchema>,
+  { body }: ValidatedRequest<SendMailRequestSchema>,
   res: Response
 ) {
   const user: MailParams = {
-    email: req.body.email,
-    receiver: req.body.receiver,
-    subject: req.body.subject,
-    text: req.body.text,
+    email: body.email,
+    receiver: body.receiver,
+    subject: body.subject,
+    text: body.text,
   };
-  const retorno = await sendMailService(user);
-  res.status(200).json(retorno);
+  let retorno;
+  try{
+    retorno = await sendMailService(user);
+  } catch(e: any) {
+    throw new MailError(e.message.toString());
+  }
+  res.status(200).json(retorno.body.Messages);
 }

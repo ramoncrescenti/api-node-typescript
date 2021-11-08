@@ -4,19 +4,21 @@ import { ValidationError, TypesArray } from '../errors/validation-error';
 
 const error = new ValidationError();
 
-function validationErrorHandler(
-  err: Error|ExpressJoiError,
+export function validationErrorHandler(
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   // type cast e type guard
   if (err && TypesArray.includes((err as ExpressJoiError).type)) {
+    const joiErr = err as ExpressJoiError;
     return res
     .status(error.statusCode)
-    .json({ error: error.error, message: error.message.toString() });
-  } else return next(err);
-  
+    .json({
+      error: error.error,
+      message: joiErr.error?.details.map(x => x.message),
+    });
+  }
+  return next(err);
 }
-
-export { validationErrorHandler };
